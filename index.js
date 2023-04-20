@@ -1,2 +1,2 @@
-const action = require("./substring-action");
+const action = require("./strings-action");
 action();

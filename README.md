@@ -10,57 +10,118 @@ dependencies.
 | name | description | required | default |
 |------|-------------|----------|---------|
 | value | Value that the substring will be obtained from. | true | - |
-| output_name | The step's output variable name from which the substring may be obtained | true | substring |
-| index_of_str | The string that is used in the (javascript) String.prototype.indexOf(index_of_str, str) query | false | - |
-| length_from_start | Returns the substring of the specified length from the beginning. | false | - |
-| length_from_end | Returns the substring of the specified length starting at the end. | false | - |
-| fail_if_not_found | If `index_of_str` does not result in a match this will cause an error to be thrown. | false | true |
-| default_return_value | If `index_of_str` fails then this value will be returned (if `fail_if_not_found = false`). | false | "" (empty string) |
+| output_name | The step's output variable name from which the substring may be obtained | true | result |
+| func_name | Function name to call | true | - |
 
-If more than one of the substring inputs is provided, the order of precedence is: `index_of_str`, `length_from_start`, 
-`length_from_end`.
+### Functions
+| func_name | parameters | description |
+|-----------|------------|-------------|
+| length | - | returns length of string |
+| substring | start: number, end: number | returns substring from start(inclusive) to end(exclusive) |
+| index_of | index_of_str: string | returns index of found string |
+| replace | replace_str: string, replace_with_str: string | returns replaced string from replace_str to replace_with_str |
 
 ## Outputs
-`output_name` - this will be whatever value was provided as the `output_name` on the input or defaults to `substring`.
+`output_name` - this will be whatever value was provided as the `output_name` on the input or defaults to `result`.
 
 ## Example Usage
 ```yaml
 steps:
-  - uses: bhowell2/github-substring-action@v1.0.0
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
     id: one
     with:
       value: "abc123"
-      index_of_str: "ab"
-# steps.one.outputs.substring = 'c123'
+      func_name: "length"
+# steps.one.outputs.result = 6 (number)
 ```
 
 ```yaml
 steps:
-  - uses: bhowell2/github-substring-action@v1.0.0
-    id: two
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
     with:
       value: "abc123"
-      index_of_str: "ab"
-      length_from_start: 3
-# steps.two.outputs.substring = 'c123' -- note length_from_start is ignored
+      func_name: "substring"
+      start: 3
+      end: 6
+# steps.one.outputs.result = '123' (string)
 ```
 
 ```yaml
 steps:
-  - uses: bhowell2/github-substring-action@v1.0.0
-    id: three
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
     with:
       value: "abc123"
-      length_from_start: 3
-# steps.three.outputs.substring = 'abc'
+      func_name: "substring"
+      start: 2
+# steps.one.outputs.result = 'c123'
 ```
 
 ```yaml
 steps:
-  - uses: bhowell2/github-substring-action@v1.0.0
-    id: four
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
     with:
       value: "abc123"
-      length_from_end: 3
-# steps.four.outputs.substring = '123'
+      func_name: "substring"
+      end: 2
+# steps.one.outputs.result = 'ab'
+```
+
+```yaml
+steps:
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
+    with:
+      value: "abc123"
+      func_name: "index_of"
+      index_of_str: "c1"
+# steps.one.outputs.result = 2 (number)
+```
+
+```yaml
+steps:
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
+    with:
+      value: "c1abc123c1"
+      func_name: "index_of"
+      index_of_str: "c1"
+# steps.one.outputs.result = 0 (number)
+```
+
+```yaml
+steps:
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
+    with:
+      value: "abc123c1"
+      func_name: "replace"
+      replace_str: "c1"
+      replace_with_str: "1c"
+# steps.one.outputs.result = 'ab1c23c1'
+```
+
+```yaml
+steps:
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
+    with:
+      value: "abc123c1"
+      func_name: "replace_all"
+      replace_str: "c1"
+      replace_with_str: "1c"
+# steps.one.outputs.result = 'ab1c231c'
+```
+
+```yaml
+steps:
+  - uses: hottestchilipepper/github-strings-action@v1.0.0
+    id: one
+    with:
+      value: "v1.2.3+42"
+      func_name: "split"
+      seperator: "+"
+# steps.one.outputs.result = ['v1.2.3', '42'] (string[])
 ```
