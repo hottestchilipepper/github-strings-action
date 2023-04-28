@@ -56,6 +56,8 @@ function run() {
       outputStr = value.toLowerCase();
     } else if (func_name === "to_upper") {
       outputStr = value.toUpperCase();
+    } else if (func_name === "to_number") {
+      outputStr = Number(value);
     } else if (func_name === "to_title") {
       outputStr = value
         .split(" ")
